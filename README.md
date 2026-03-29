@@ -35,7 +35,7 @@ Ensina o Claude a operar WHMCS via MCP, com:
 - **Security hooks** — confirmacao obrigatoria para operacoes destrutivas
 - **Deteccao de contexto** — auto-carrega a skill quando detecta termos WHMCS no prompt
 
-Documentacao detalhada da skill: [`skills/whmcs-mcp/README.md`](skills/whmcs-mcp/README.md)
+Documentacao detalhada da skill: [`skills/whmcs-mcp/SKILL.md`](skills/whmcs-mcp/SKILL.md)
 
 ## Arquitetura: 2 Repositorios
 
@@ -55,6 +55,15 @@ Documentacao detalhada da skill: [`skills/whmcs-mcp/README.md`](skills/whmcs-mcp
 └─────────────────────────────┘      └──────────────────────────────┘
 ```
 
+## Hooks de Seguranca
+
+O plugin inclui hooks automaticos em `hooks/hooks.json`:
+
+- **UserPromptSubmit** — detecta contexto WHMCS no prompt e sugere carregar a skill
+- **PreToolUse** — exige confirmacao para 10 operacoes destrutivas (suspend, terminate, delete, register domain, send email, etc.)
+
+Os hooks sao carregados automaticamente quando o plugin esta habilitado — nao precisa configurar nada.
+
 ## Estrutura do Repositorio
 
 ```
@@ -64,12 +73,11 @@ whmcs-mcp-plugin/
 │   └── marketplace.json         # Registro para instalacao via GitHub
 ├── skills/
 │   └── whmcs-mcp/
-│       ├── SKILL.md             # Definicao da skill (source of truth)
-│       ├── README.md            # Documentacao detalhada da skill
-│       └── WARP.md              # Guia para editor Warp (warp.dev)
+│       └── SKILL.md             # Definicao da skill (source of truth)
 ├── hooks/
 │   └── hooks.json               # Hooks de seguranca WHMCS
 ├── README.md                    # Este arquivo
+├── WARP.md                      # Guia para editor Warp (warp.dev)
 └── LICENSE                      # MIT
 ```
 
@@ -84,8 +92,8 @@ whmcs-mcp-plugin/
 | Recurso | URL |
 |---------|-----|
 | **Servidor MCP (addon WHMCS)** | [fcs7/whmcs-mcp](https://github.com/fcs7/whmcs-mcp) |
-| **Skill detalhada** | [`skills/whmcs-mcp/README.md`](skills/whmcs-mcp/README.md) |
-| **Guia editor Warp** | [`skills/whmcs-mcp/WARP.md`](skills/whmcs-mcp/WARP.md) |
+| **Skill (source of truth)** | [`skills/whmcs-mcp/SKILL.md`](skills/whmcs-mcp/SKILL.md) |
+| **Guia editor Warp** | [`WARP.md`](WARP.md) |
 
 ## License
 

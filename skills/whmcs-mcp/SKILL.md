@@ -7,7 +7,7 @@ description: Use when operating WHMCS via mcp__whmcs-ntweb__* tools — managing
 
 ## Overview
 
-54 tools MCP para operar o WHMCS da **NT Web** (`novo.ntweb.net.br`) via Claude Code.
+54 tools MCP para operar WHMCS via Claude Code.
 Todos os tools são **deferred** — carregue com ToolSearch antes de chamar.
 
 ---
@@ -79,24 +79,24 @@ ToolSearch → select:mcp__claude-in-chrome__get_page_text
 
 Executar passo a passo, tirando screenshot (`computer`) após cada ação relevante para confirmar o resultado visual.
 
-### URLs-chave do painel NT Web
+### URLs-chave do painel admin
 
 | Destino | URL |
 |---------|-----|
-| Admin principal | `novo.ntweb.net.br/gestor/` |
-| Resumo do cliente | `/gestor/clientssummary.php?userid=ID` |
-| Editar cliente | `/gestor/clients.php?action=edit&userid=ID` |
-| Serviços do cliente | `/gestor/clientsservices.php?userid=ID` |
-| Faturas do cliente | `/gestor/clientsinvoices.php?userid=ID` |
-| Configurar produtos | `/gestor/configproducts.php` |
-| Servidores | `/gestor/configservers.php` |
-| Relatórios | `/gestor/reports.php` |
-| Log de atividade | `/gestor/activitylog.php` |
-| Pedidos | `/gestor/orders.php` |
-| Tickets | `/gestor/supporttickets.php` |
-| **Proxmox VE VPS & Cloud** | `/gestor/index.php?m=proxmox` |
-| **CRM ModulesGarden (CRMv2)** | `/gestor/index.php?m=modulesgardencrm` |
-| **Project Manager visual** | `/gestor/index.php?m=project_management` |
+| Admin principal | `{seu-whmcs.com}/admin/` |
+| Resumo do cliente | `/admin/clientssummary.php?userid=ID` |
+| Editar cliente | `/admin/clients.php?action=edit&userid=ID` |
+| Serviços do cliente | `/admin/clientsservices.php?userid=ID` |
+| Faturas do cliente | `/admin/clientsinvoices.php?userid=ID` |
+| Configurar produtos | `/admin/configproducts.php` |
+| Servidores | `/admin/configservers.php` |
+| Relatórios | `/admin/reports.php` |
+| Log de atividade | `/admin/activitylog.php` |
+| Pedidos | `/admin/orders.php` |
+| Tickets | `/admin/supporttickets.php` |
+| **Proxmox VE VPS & Cloud** | `/admin/index.php?m=proxmox` |
+| **CRM ModulesGarden (CRMv2)** | `/admin/index.php?m=modulesgardencrm` |
+| **Project Manager visual** | `/admin/index.php?m=project_management` |
 
 ---
 
@@ -104,7 +104,7 @@ Executar passo a passo, tirando screenshot (`computer`) após cada ação releva
 
 ### Buscar cliente no painel Chrome (Pesquisa Avançada)
 ```
-1. [Chrome] navigate → /gestor/clientssummary.php
+1. [Chrome] navigate → /admin/clientssummary.php
 2. [Chrome] Usar sidebar "Pesquisa Avançada":
             → Selecionar "Clients" no 1º dropdown
             → Selecionar "Client Name" no 2º dropdown
@@ -120,7 +120,7 @@ Executar passo a passo, tirando screenshot (`computer`) após cada ação releva
 ```
 1. [MCP]    whmcs_list_clients(search="nome") → userid
 2. [PLANO]  Apresentar ao usuário o que será feito
-3. [Chrome] navigate → /gestor/clients.php?action=edit&userid=ID
+3. [Chrome] navigate → /admin/clients.php?action=edit&userid=ID
 4. [Chrome] computer(screenshot) → confirmar que está na página certa
 5. [Chrome] find("Status") → form_input(select "Active"/"Inactive")
 6. [Chrome] find("Save Changes") → click
@@ -138,7 +138,7 @@ Executar passo a passo, tirando screenshot (`computer`) após cada ação releva
 
 ### Acessar relatório financeiro detalhado
 ```
-1. [Chrome] navigate → /gestor/reports.php
+1. [Chrome] navigate → /admin/reports.php
 2. [Chrome] computer(screenshot) → identificar relatório desejado
 3. [Chrome] get_page_text → extrair dados do relatório
 4. Formatar e apresentar ao usuário
@@ -154,7 +154,7 @@ Estes addons não têm tools MCP disponíveis. Use sempre Chrome MCP.
 
 ### Proxmox VE VPS & Cloud
 
-**URL:** `/gestor/index.php?m=proxmox`
+**URL:** `/admin/index.php?m=proxmox`
 
 **Operações disponíveis:**
 - Listar VMs por cliente ou nó Proxmox
@@ -168,7 +168,7 @@ Estes addons não têm tools MCP disponíveis. Use sempre Chrome MCP.
 ```
 1. [MCP]    whmcs_list_clients(search="nome") → userid
             whmcs_get_client_products(clientid=ID) → identificar serviço Proxmox (serverid≠0)
-2. [Chrome] navigate → /gestor/clientsservices.php?userid=ID&productselect=SERVICEID
+2. [Chrome] navigate → /admin/clientsservices.php?userid=ID&productselect=SERVICEID
 3. [Chrome] computer(screenshot) → localizar botões Start/Stop/Console
 4. [PLANO]  Apresentar ao usuário o que será feito antes de executar
 5. [Chrome] Executar ação e confirmar com screenshot
@@ -176,7 +176,7 @@ Estes addons não têm tools MCP disponíveis. Use sempre Chrome MCP.
 
 **Workflow — Listar todas as VMs no painel Proxmox:**
 ```
-1. [Chrome] navigate → /gestor/index.php?m=proxmox
+1. [Chrome] navigate → /admin/index.php?m=proxmox
 2. [Chrome] computer(screenshot) → ver lista de VMs e status
 3. [Chrome] get_page_text → extrair dados estruturados
 ```
@@ -188,7 +188,7 @@ Estes addons não têm tools MCP disponíveis. Use sempre Chrome MCP.
 
 ### CRMv2 — ModulesGarden CRM
 
-**URL:** `/gestor/index.php?m=modulesgardencrm`
+**URL:** `/admin/index.php?m=modulesgardencrm`
 
 **Quando usar Chrome vs API:**
 - **API primeiro** (`whmcs_crm_*`): buscar contatos, criar leads, adicionar notas simples
@@ -201,7 +201,7 @@ Estes addons não têm tools MCP disponíveis. Use sempre Chrome MCP.
 
 **Workflow — Acessar Kanban do CRM:**
 ```
-1. [Chrome] navigate → /gestor/index.php?m=modulesgardencrm
+1. [Chrome] navigate → /admin/index.php?m=modulesgardencrm
 2. [Chrome] computer(screenshot) → identificar view Kanban
 3. [Chrome] Operar cards, mover estágios, adicionar notas
 ```
@@ -209,7 +209,7 @@ Estes addons não têm tools MCP disponíveis. Use sempre Chrome MCP.
 **Workflow — Criar lead e acompanhar no funil:**
 ```
 1. [MCP]    whmcs_crm_create_lead(name="...", email="...") → se API disponível
-2. [Chrome] navigate → /gestor/index.php?m=modulesgardencrm → confirmar criação visual
+2. [Chrome] navigate → /admin/index.php?m=modulesgardencrm → confirmar criação visual
 3. [Chrome] Adicionar detalhes ricos via interface
 ```
 
@@ -217,7 +217,7 @@ Estes addons não têm tools MCP disponíveis. Use sempre Chrome MCP.
 
 ### Project Manager — Interface Visual
 
-**URL:** `/gestor/index.php?m=project_management`
+**URL:** `/admin/index.php?m=project_management`
 
 **Decisão API vs Chrome:**
 
@@ -233,7 +233,7 @@ Estes addons não têm tools MCP disponíveis. Use sempre Chrome MCP.
 **Workflow — Ver projetos no painel visual:**
 ```
 1. [MCP]    whmcs_list_projects() → listar IDs e nomes (rápido)
-2. [Chrome] navigate → /gestor/index.php?m=project_management
+2. [Chrome] navigate → /admin/index.php?m=project_management
 3. [Chrome] computer(screenshot) → localizar projeto na lista
 4. [Chrome] Executar operações visuais conforme solicitado
 ```
@@ -444,9 +444,15 @@ ou cancelar (`whmcs_cancel_order`) → depois deletar (`whmcs_delete_order`)
 
 ---
 
-## NT Web — Contexto Específico
+## Configuracao — Seu Ambiente
 
-- **WHMCS em:** `novo.ntweb.net.br`
-- **Painel admin:** `novo.ntweb.net.br/gestor/` (path renomeado por segurança)
-- **Slugs de produtos:** `nt-fiber`, `nt-movel-ip`, `nt-host`, `nt-cloud`, `nt-backup`, `nt-fone`, `nt-movel`, `nt-recarga`
-- **País padrão:** BR (já configurado como default nos tools)
+Para personalizar esta skill ao seu WHMCS, crie `.claude/whmcs-mcp.local.md` no projeto:
+
+```
+WHMCS URL: https://seu-dominio.com
+Admin path: /admin/
+Produtos: produto-1, produto-2, produto-3
+Pais padrao: BR
+```
+
+A skill usa `/admin/` como path padrao do painel. Se seu WHMCS usa um path diferente, atualize as URLs nos workflows Chrome MCP acima.

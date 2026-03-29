@@ -4,12 +4,13 @@ This file provides guidance to [Warp](https://warp.dev) when working with code i
 
 ## What this repo is
 
-This repository is a **Claude Code skill** implemented entirely as Markdown.
+This repository is a **Claude Code plugin** for WHMCS MCP, implemented entirely as Markdown + JSON.
 
-The "runtime" artifact is `SKILL.md`: Claude Code reads the YAML frontmatter (metadata) and the prompt/instructions that follow. Everything else is supporting documentation and automation.
+The "runtime" artifact is `skills/whmcs-mcp/SKILL.md`: Claude Code reads the YAML frontmatter (metadata) and the prompt/instructions that follow. Everything else is supporting documentation and automation.
 
-- `SKILL.md` is for Claude — the canonical, detailed tool reference with decision frameworks and workflow examples.
-- `README.md` is for humans — installation, usage, and a compact overview.
+- `skills/whmcs-mcp/SKILL.md` is for Claude — the canonical, detailed tool reference with decision frameworks and workflow examples.
+- `README.md` (root) is for humans — installation, usage, and a compact overview.
+- `WARP.md` (this file) is for Warp editor — guidance on structure and safe editing.
 - `hooks/hooks.json` is for Claude Code — automated behavior (context detection, confirmation gates).
 
 ## Key files (and how they relate)
