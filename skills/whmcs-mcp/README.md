@@ -1,5 +1,7 @@
 # WHMCS MCP Skill — Claude Code
 
+> **[← Voltar ao README principal](../../README.md)** | Servidor MCP: **[fcs7/whmcs-mcp](https://github.com/fcs7/whmcs-mcp)**
+
 A Claude Code skill that teaches Claude how to operate WHMCS via Model Context Protocol.
 The skill auto-triggers when your prompt mentions WHMCS concepts (clients, invoices, tickets, domains, etc.).
 
