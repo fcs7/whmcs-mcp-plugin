@@ -2,7 +2,7 @@
 
 > **Skill + hooks para operar WHMCS via Claude Code com 54 MCP tools.**
 >
-> Este e o **plugin client-side** (Claude Code). O **servidor MCP** (addon PHP para WHMCS) esta em [fcs7/whmcs-mcp](https://github.com/fcs7/whmcs-mcp).
+> Este e o **plugin client-side** (Claude Code). O **servidor MCP** (addon PHP para WHMCS) esta em **[fcs7/whmcs-mcp](https://github.com/fcs7/whmcs-mcp)**.
 
 ## Quick Install
 
@@ -41,14 +41,15 @@ Documentacao detalhada da skill: [`skills/whmcs-mcp/README.md`](skills/whmcs-mcp
 
 ```
 ┌─────────────────────────────┐      ┌──────────────────────────────┐
-│  whmcs-mcp-plugin (publico) │      │  whmcs-mcp (privado)         │
-│  Este repo                  │      │  github.com/fcs7/whmcs-mcp   │
+│  whmcs-mcp-plugin ← este    │      │  whmcs-mcp                   │
+│  github.com/fcs7/           │      │  github.com/fcs7/whmcs-mcp   │
+│  whmcs-mcp-plugin           │      │                              │
+│                             │      │  Addon WHMCS (PHP):          │
+│  Plugin Claude Code:        │      │  • mcp.php (endpoint HTTP)   │
+│  • SKILL.md (referencia)    │ ──── │  • oauth.php (OAuth 2.1)     │
+│  • hooks.json (seguranca)   │ MCP  │  • src/Tools/ (54 tools)     │
+│  • plugin.json (metadados)  │      │  • src/Auth/ (Bearer+OAuth)  │
 │                             │      │                              │
-│  Plugin Claude Code:        │      │  Addon WHMCS (PHP):          │
-│  • SKILL.md (referencia)    │ ──── │  • mcp.php (endpoint HTTP)   │
-│  • hooks.json (seguranca)   │ MCP  │  • oauth.php (OAuth 2.1)     │
-│  • plugin.json (metadados)  │      │  • src/Tools/ (54 tools)     │
-│                             │      │  • src/Auth/ (Bearer+OAuth)  │
 │  Roda em: Claude Code CLI   │      │  Roda em: Servidor WHMCS     │
 │           Claude Desktop    │      │           PHP 8.2+           │
 └─────────────────────────────┘      └──────────────────────────────┘
