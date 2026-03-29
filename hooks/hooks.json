@@ -1,0 +1,26 @@
+{
+  "description": "Hooks WHMCS: detecta contexto WHMCS no prompt e pede confirmação para operações de risco",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.prompt // \"\"' | grep -qiE '(whmcs|fatura|invoice|billing|ticket|suspender|reativar|dom[ií]nio|criar.{0,10}client|novo.{0,10}client|ativar.{0,10}client|fechar.{0,10}client)' && printf '{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Contexto WHMCS detectado. Use o skill whmcs-mcp (ferramenta Skill) antes de qualquer operacao com mcp__whmcs-ntweb__* tools.\"}}' || true"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "mcp__whmcs-ntweb__whmcs_suspend_service|mcp__whmcs-ntweb__whmcs_terminate_service|mcp__whmcs-ntweb__whmcs_accept_order|mcp__whmcs-ntweb__whmcs_cancel_order|mcp__whmcs-ntweb__whmcs_delete_order|mcp__whmcs-ntweb__whmcs_register_domain|mcp__whmcs-ntweb__whmcs_renew_domain|mcp__whmcs-ntweb__whmcs_send_email|mcp__whmcs-ntweb__whmcs_upgrade_service|mcp__whmcs-ntweb__whmcs_close_client",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); tool=$(echo \"$input\" | jq -r '.tool_name | split(\"__\") | last'); printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"Operacao de risco WHMCS: %s - confirme antes de prosseguir.\"}}' \"$tool\""
+          }
+        ]
+      }
+    ]
+  }
+}

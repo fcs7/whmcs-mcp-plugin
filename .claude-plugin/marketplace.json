@@ -1,0 +1,16 @@
+{
+  "name": "whmcs-mcp-plugin",
+  "description": "Plugin Claude Code para operar WHMCS via Model Context Protocol",
+  "owner": {
+    "name": "fcs",
+    "email": "fcs@ntweb.com.br"
+  },
+  "plugins": [
+    {
+      "name": "whmcs-mcp",
+      "description": "Skill + hooks para operar WHMCS via 54 MCP tools",
+      "version": "1.0.0",
+      "source": "./"
+    }
+  ]
+}

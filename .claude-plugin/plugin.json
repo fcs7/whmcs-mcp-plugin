@@ -1,0 +1,12 @@
+{
+  "name": "whmcs-mcp",
+  "version": "1.0.0",
+  "description": "Skill + hooks para operar WHMCS via MCP tools — 54 tools para clientes, billing, tickets, serviços, domínios, pedidos, projetos e CRM",
+  "author": {
+    "name": "fcs",
+    "email": "fcs@ntweb.com.br"
+  },
+  "repository": "https://github.com/fcs7/whmcs-mcp-plugin",
+  "license": "MIT",
+  "keywords": ["whmcs", "mcp", "hosting", "billing", "crm"]
+}
