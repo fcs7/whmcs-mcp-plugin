@@ -1,28 +1,23 @@
-# WHMCS MCP Plugin — Claude Code
+# WHMCS MCP Skill — Claude Code
 
-Plugin para Claude Code que ensina como operar WHMCS via Model Context Protocol (54 tools).
+A Claude Code skill that teaches Claude how to operate WHMCS via Model Context Protocol.
+The skill auto-triggers when your prompt mentions WHMCS concepts (clients, invoices, tickets, domains, etc.).
 
-## O que inclui
+## Quick Install
 
-- **Skill `whmcs-mcp`** — Guia de referência completo com 54 tools organizados por categoria (Clients, Billing, Tickets, Services, Domains, Orders, Projects, CRM)
-- **Hooks de segurança** — Confirmação obrigatória para operações destrutivas (suspend, terminate, delete, etc.)
-- **Detecção de contexto** — Auto-detecta quando o prompt envolve WHMCS e carrega a skill automaticamente
-- **Workflows Chrome MCP** — Guias para operações que a API não cobre (status de cliente, relatórios, Proxmox VE, CRM visual)
+```bash
+mkdir -p ~/.claude/skills
+git clone https://github.com/fcs7/whmcs-mcp-plugin.git ~/.claude/skills/whmcs-mcp
+```
 
-## Instalação
+Or as a plugin (auto-updates):
 
-### Via GitHub (recomendado)
-
-No `~/.claude/settings.json`, adicione ao `extraKnownMarketplaces`:
-
-```json
+```jsonc
+// ~/.claude/settings.json
 {
   "extraKnownMarketplaces": {
     "whmcs-mcp-plugin": {
-      "source": {
-        "source": "github",
-        "repo": "fcs7/whmcs-mcp-plugin"
-      }
+      "source": { "source": "github", "repo": "fcs7/whmcs-mcp-plugin" }
     }
   },
   "enabledPlugins": {
@@ -31,48 +26,91 @@ No `~/.claude/settings.json`, adicione ao `extraKnownMarketplaces`:
 }
 ```
 
-### Manual (local)
+## What It Does
 
-Clone o repo e adicione ao marketplace local:
+The skill provides Claude with a complete reference for 54 WHMCS MCP tools, organized by domain, plus decision frameworks for when to use the API vs browser automation.
 
-```bash
-git clone https://github.com/fcs7/whmcs-mcp-plugin.git ~/.claude/plugins/local/whmcs-mcp
-```
+### Tool Categories (54 tools)
 
-Depois adicione ao `~/.claude/plugins/local/.claude-plugin/marketplace.json`:
+| Category | Tools | Key Operations |
+|----------|-------|----------------|
+| **Clients** | 8 | list, get, create, update, close, products, domains, invoices |
+| **Billing** | 6 | list/get/create/update invoices, add payment, transactions |
+| **Tickets** | 5 | list, get, open, reply, update (with status lifecycle) |
+| **Services** | 5 | list, suspend, unsuspend, terminate, upgrade |
+| **Domains** | 4 | list, register, renew, update nameservers |
+| **Orders** | 5 | list, get, accept, cancel, delete |
+| **Projects** | 10 | CRUD projects/tasks, timers, messages |
+| **CRM** | 8 | contacts, leads, followups, notes, kanban |
+| **System** | 3 | stats, send email, activity log |
 
-```json
-{
-  "name": "whmcs-mcp",
-  "description": "WHMCS MCP Plugin",
-  "version": "1.0.0",
-  "source": "./whmcs-mcp",
-  "skills": ["./whmcs-mcp/skills/whmcs-mcp"]
-}
-```
+### Decision Framework
 
-## Requisitos
+The skill teaches Claude to choose the right approach:
 
-- Claude Code CLI ou Claude Desktop
-- MCP Server WHMCS configurado (ver [whmcs-mcp](https://github.com/fcs7/whmcs-mcp))
-- `jq` instalado (para os hooks)
+- **API first** — Use MCP tools for CRUD operations, data extraction, and structured actions
+- **Chrome MCP fallback** — Switch to browser automation when the API doesn't cover the operation (client status changes, product configuration, visual reports, Proxmox VE, CRM kanban)
 
-## Estrutura
+### Security Hooks
+
+Included `hooks.json` adds safety guardrails:
+
+- **Context detection** — Auto-suggests loading the skill when WHMCS terms appear in prompts
+- **Confirmation gates** — Requires explicit user approval before destructive operations (suspend, terminate, delete, register domain, send email)
+
+## Prerequisites
+
+- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI or Desktop
+- A WHMCS instance with MCP Server configured (see [whmcs-mcp](https://github.com/fcs7/whmcs-mcp))
+- `jq` (for hooks)
+
+## Repository Structure
 
 ```
 whmcs-mcp-plugin/
 ├── .claude-plugin/
-│   ├── plugin.json          # Metadados do plugin
-│   └── marketplace.json     # Registro para instalação
+│   ├── plugin.json          # Plugin metadata (name, version, author)
+│   └── marketplace.json     # Registry for GitHub-based installation
 ├── skills/
 │   └── whmcs-mcp/
-│       └── SKILL.md         # Guia de referência (54 tools)
+│       └── SKILL.md         # The skill definition (source of truth)
 ├── hooks/
-│   └── hooks.json           # Hooks de segurança WHMCS
-├── README.md
-└── LICENSE
+│   └── hooks.json           # Security hooks (context detection + confirmation)
+├── WARP.md                  # Guidance for Warp (warp.dev) editor
+├── README.md                # This file (human documentation)
+└── LICENSE                  # MIT
 ```
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `skills/whmcs-mcp/SKILL.md` | **Source of truth.** YAML frontmatter + full tool reference, decision frameworks, and workflow examples. Claude reads this at runtime. |
+| `README.md` | Human documentation. Installation, overview, and structure. |
+| `WARP.md` | Editor guidance for Warp (warp.dev). Explains repo structure and safe editing practices. |
+| `hooks/hooks.json` | Automation hooks. Context detection and destructive operation gates. |
+
+## Making Changes
+
+### Editing the skill
+
+1. Edit `skills/whmcs-mcp/SKILL.md` — this is the source of truth
+2. Preserve YAML frontmatter formatting (`---` delimiters, `name:`, `description:`)
+3. Keep tool tables consistent (Tool | Required Params | Optional Params)
+4. Update `README.md` if the change affects the category table or tool count
+
+### Versioning
+
+- `SKILL.md` frontmatter: update `version` field (when added)
+- `plugin.json`: update `version` field
+- `README.md`: keep tool count in sync
+
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.0.0 | 2026-03-29 | Initial release — 54 tools, 9 categories, Chrome MCP workflows, security hooks |
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE)
