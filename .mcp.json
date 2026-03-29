@@ -1,0 +1,6 @@
+{
+  "whmcs-ntweb": {
+    "type": "http",
+    "url": "${WHMCS_MCP_URL}"
+  }
+}

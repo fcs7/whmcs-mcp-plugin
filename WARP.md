@@ -8,6 +8,7 @@ This repository is a **Claude Code plugin** for WHMCS MCP, implemented entirely 
 
 The "runtime" artifact is `skills/whmcs-mcp/SKILL.md`: Claude Code reads the YAML frontmatter (metadata) and the prompt/instructions that follow. Everything else is supporting documentation and automation.
 
+- `.mcp.json` is for Claude Code — auto-registers the WHMCS MCP server via `$WHMCS_MCP_URL`.
 - `skills/whmcs-mcp/SKILL.md` is for Claude — the canonical, detailed tool reference with decision frameworks and workflow examples.
 - `README.md` (root) is for humans — installation, usage, and a compact overview.
 - `WARP.md` (this file) is for Warp editor — guidance on structure and safe editing.
@@ -32,6 +33,13 @@ The "runtime" artifact is `skills/whmcs-mcp/SKILL.md`: Claude Code reads the YAM
   - `UserPromptSubmit` — detects WHMCS context in user prompts and suggests loading the skill.
   - `PreToolUse` — gates destructive WHMCS operations (suspend, terminate, delete, etc.) behind user confirmation.
 
+### `.mcp.json`
+
+- Auto-registers the WHMCS MCP server when the plugin is enabled in Claude Code.
+- Uses `${WHMCS_MCP_URL}` environment variable — each user sets their own WHMCS URL.
+- Transport: HTTP with OAuth 2.1 (handled automatically by Claude Code).
+- Server name: `whmcs-ntweb`.
+
 ### `.claude-plugin/plugin.json` + `marketplace.json`
 
 - Plugin metadata for distribution via GitHub.
@@ -41,21 +49,17 @@ When changing behavior/content, treat `SKILL.md` as the source of truth, and upd
 
 ## Common commands
 
-### Install the skill into Claude Code
+### Install as plugin (recommended)
 
-Recommended (clone directly into Claude Code skills directory):
-
-```bash
-mkdir -p ~/.claude/skills
-git clone https://github.com/fcs7/whmcs-mcp-plugin.git ~/.claude/skills/whmcs-mcp
-```
-
-Manual install/update (only the skill file):
+1. Set the environment variable with your WHMCS MCP URL:
 
 ```bash
-mkdir -p ~/.claude/skills/whmcs-mcp
-cp skills/whmcs-mcp/SKILL.md ~/.claude/skills/whmcs-mcp/
+export WHMCS_MCP_URL="https://seu-whmcs.com/modules/addons/nt_mcp/mcp.php"
 ```
+
+2. Install via `/plugin` in Claude Code, or add to `~/.claude/settings.json`.
+
+The plugin auto-registers the MCP server via `.mcp.json` and handles OAuth automatically.
 
 ### How to "run" it (Claude Code)
 

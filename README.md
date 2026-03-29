@@ -1,17 +1,57 @@
-# WHMCS MCP Plugin — Claude Code
+# WHMCS MCP Plugin
 
-> **Skill + hooks para operar WHMCS via Claude Code com 54 MCP tools.**
+> **Plugin para operar WHMCS via Claude com 54 MCP tools.**
+> Empacota Habilidade (Skill) + Conector (MCP) + Hooks de seguranca num so plugin.
 >
-> Este e o **plugin client-side** (Claude Code). O **servidor MCP** (addon PHP para WHMCS) esta em **[fcs7/whmcs-mcp](https://github.com/fcs7/whmcs-mcp)**.
+> O **servidor MCP** (addon PHP para WHMCS) esta em **[fcs7/whmcs-mcp](https://github.com/fcs7/whmcs-mcp)**.
 
-## Quick Install
+---
 
-```bash
-mkdir -p ~/.claude/skills
-git clone https://github.com/fcs7/whmcs-mcp-plugin.git ~/.claude/skills/whmcs-mcp
+## Conceitos do Claude
+
+O Claude organiza capacidades externas em 3 camadas:
+
+| Conceito | O que faz | Claude Code | Claude Desktop |
+|----------|-----------|:-----------:|:--------------:|
+| **Habilidade** (Skill) | Ensina o Claude *como* usar ferramentas — parametros, workflows, boas praticas | Sim | Sim |
+| **Conector** (Connector) | Conecta o Claude a um sistema externo via MCP — expoe as ferramentas | Sim | Sim |
+| **Plugin** | Empacota Habilidade + Conector + Hooks numa instalacao so | Sim | **Nao** |
+
+> **Este repositorio e um Plugin.** No Claude Code, instale o plugin e pronto. No Claude Desktop, configure a Habilidade e o Conector separadamente.
+
+---
+
+## Pre-requisito: Servidor MCP no WHMCS
+
+Antes de tudo, instale o addon PHP no seu servidor WHMCS → **[fcs7/whmcs-mcp](https://github.com/fcs7/whmcs-mcp)**
+
+Ao final voce tera uma URL como:
+```
+https://seu-whmcs.com/modules/addons/nt_mcp/mcp.php
 ```
 
-Ou como plugin (auto-updates) — adicione ao `~/.claude/settings.json`:
+---
+
+## Setup — Claude Code
+
+> Claude Code = CLI, Desktop app, Web app, IDE extensions (VS Code, JetBrains).
+
+### 1. Configure a variavel de ambiente
+
+O plugin usa `WHMCS_MCP_URL` para conectar ao seu servidor. Adicione ao shell profile (`~/.bashrc`, `~/.zshrc`):
+
+```bash
+export WHMCS_MCP_URL="https://seu-whmcs.com/modules/addons/nt_mcp/mcp.php"
+```
+
+### 2. Instale o plugin
+
+```bash
+# Opcao A: Via /plugin no Claude Code (recomendado — auto-updates)
+# Digite /plugin no chat e selecione whmcs-mcp-plugin
+
+# Opcao B: Manualmente no ~/.claude/settings.json:
+```
 
 ```jsonc
 {
@@ -26,74 +66,90 @@ Ou como plugin (auto-updates) — adicione ao `~/.claude/settings.json`:
 }
 ```
 
-## O Que Faz
+**Pronto.** O plugin configura tudo automaticamente:
+- **Conector**: `.mcp.json` registra o servidor MCP usando `$WHMCS_MCP_URL`
+- **Habilidade**: SKILL.md com referencia dos 54 tools e carregada sob demanda
+- **Hooks**: confirmacao obrigatoria antes de operacoes destrutivas
+- **OAuth**: iniciado automaticamente na primeira chamada de tool
 
-Ensina o Claude a operar WHMCS via MCP, com:
+---
 
-- **54 tools** organizados em 9 categorias (Clients, Billing, Tickets, Services, Domains, Orders, Projects, CRM, System)
-- **Decision framework** — quando usar API vs Chrome MCP (browser automation)
-- **Security hooks** — confirmacao obrigatoria para operacoes destrutivas
-- **Deteccao de contexto** — auto-carrega a skill quando detecta termos WHMCS no prompt
+## Setup — Claude Desktop
 
-Documentacao detalhada da skill: [`skills/whmcs-mcp/SKILL.md`](skills/whmcs-mcp/SKILL.md)
+> Claude Desktop = app standalone da Anthropic. Nao suporta plugins, mas suporta Habilidades e Conectores separadamente.
 
-## Arquitetura: 2 Repositorios
+### 1. Adicionar Conector
+
+Va em **Settings > Conectores** e adicione a URL do seu servidor MCP:
 
 ```
-┌─────────────────────────────┐      ┌──────────────────────────────┐
-│  whmcs-mcp-plugin ← este    │      │  whmcs-mcp                   │
-│  github.com/fcs7/           │      │  github.com/fcs7/whmcs-mcp   │
-│  whmcs-mcp-plugin           │      │                              │
-│                             │      │  Addon WHMCS (PHP):          │
-│  Plugin Claude Code:        │      │  • mcp.php (endpoint HTTP)   │
-│  • SKILL.md (referencia)    │ ──── │  • oauth.php (OAuth 2.1)     │
-│  • hooks.json (seguranca)   │ MCP  │  • src/Tools/ (54 tools)     │
-│  • plugin.json (metadados)  │      │  • src/Auth/ (Bearer+OAuth)  │
-│                             │      │                              │
-│  Roda em: Claude Code CLI   │      │  Roda em: Servidor WHMCS     │
-│           Claude Desktop    │      │           PHP 8.2+           │
-└─────────────────────────────┘      └──────────────────────────────┘
+https://seu-whmcs.com/modules/addons/nt_mcp/mcp.php
 ```
 
-## Hooks de Seguranca
+O OAuth e iniciado automaticamente na primeira chamada de tool.
 
-O plugin inclui hooks automaticos em `hooks/hooks.json`:
+> Para configuracao avancada (token estatico, troubleshooting), veja as instrucoes no **[README do servidor MCP](https://github.com/fcs7/whmcs-mcp)**.
 
-- **UserPromptSubmit** — detecta contexto WHMCS no prompt e sugere carregar a skill
-- **PreToolUse** — exige confirmacao para 10 operacoes destrutivas (suspend, terminate, delete, register domain, send email, etc.)
+### 2. Adicionar Habilidade
 
-Os hooks sao carregados automaticamente quando o plugin esta habilitado — nao precisa configurar nada.
+Va em **Settings > Habilidades** e crie uma **habilidade pessoal** com o conteudo do arquivo [`skills/whmcs-mcp/SKILL.md`](skills/whmcs-mcp/SKILL.md) deste repositorio.
 
-## Estrutura do Repositorio
+Isso ensina o Claude a usar os 54 tools corretamente — parametros, workflows, decision framework (API vs browser).
+
+### Diferenca entre Claude Code e Desktop
+
+| Recurso | Claude Code (plugin) | Claude Desktop (manual) |
+|---------|:--------------------:|:-----------------------:|
+| 54 MCP tools | Sim (Conector auto) | Sim (Conector manual) |
+| Referencia dos tools | Sim (Habilidade auto) | Sim (Habilidade manual) |
+| Hooks de seguranca | Sim | Nao |
+| Deteccao de contexto WHMCS | Sim | Nao |
+| Auto-updates | Sim | Nao |
+
+---
+
+## O Que o Plugin Inclui
 
 ```
 whmcs-mcp-plugin/
-├── .claude-plugin/
-│   ├── plugin.json              # Metadados do plugin
-│   └── marketplace.json         # Registro para instalacao via GitHub
+├── .mcp.json                    # Conector — registra servidor MCP via $WHMCS_MCP_URL
 ├── skills/
 │   └── whmcs-mcp/
-│       └── SKILL.md             # Definicao da skill (source of truth)
+│       └── SKILL.md             # Habilidade — referencia dos 54 tools
 ├── hooks/
-│   └── hooks.json               # Hooks de seguranca WHMCS
-├── README.md                    # Este arquivo
-├── WARP.md                      # Guia para editor Warp (warp.dev)
+│   └── hooks.json               # Hooks de seguranca + deteccao de contexto
+├── .claude-plugin/
+│   ├── plugin.json              # Metadados do plugin
+│   └── marketplace.json         # Registro GitHub marketplace
+├── README.md
+├── WARP.md
 └── LICENSE                      # MIT
 ```
 
-## Pre-requisitos
+### Habilidade (SKILL.md)
 
-1. [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI ou Desktop
-2. Servidor MCP WHMCS instalado e configurado — ver **[fcs7/whmcs-mcp](https://github.com/fcs7/whmcs-mcp)**
-3. `jq` (para os hooks)
+- **54 tools documentados** com parametros obrigatorios e opcionais
+- **Decision framework** — quando usar API (MCP tools) vs browser (Chrome MCP)
+- **Workflows prontos** — pesquisar cliente, gerenciar fatura, responder ticket, etc.
+- **Addons Chrome** — Proxmox VE, CRM ModulesGarden, Project Manager visual
+
+### Hooks de Seguranca
+
+| Hook | Funcao |
+|------|--------|
+| **UserPromptSubmit** | Detecta contexto WHMCS no prompt e sugere carregar a skill |
+| **PreToolUse** | Exige confirmacao para 10 operacoes destrutivas |
+
+Operacoes protegidas: `suspend_service`, `terminate_service`, `accept_order`, `cancel_order`, `delete_order`, `register_domain`, `renew_domain`, `send_email`, `upgrade_service`, `close_client`.
+
+---
 
 ## Links
 
 | Recurso | URL |
 |---------|-----|
 | **Servidor MCP (addon WHMCS)** | [fcs7/whmcs-mcp](https://github.com/fcs7/whmcs-mcp) |
-| **Skill (source of truth)** | [`skills/whmcs-mcp/SKILL.md`](skills/whmcs-mcp/SKILL.md) |
-| **Guia editor Warp** | [`WARP.md`](WARP.md) |
+| **Habilidade (source of truth)** | [`skills/whmcs-mcp/SKILL.md`](skills/whmcs-mcp/SKILL.md) |
 
 ## License
 
